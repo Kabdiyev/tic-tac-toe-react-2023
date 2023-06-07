@@ -2,6 +2,8 @@ import { useState } from "react";
 import MainLayout from "./layouts/MainLayout";
 import Zagruzka from "./components/Zagruzka";
 import Grid from "./components/Grid";
+import {checkWinCondition} from "./components/Winconditions";
+
 
 function App() {
   const [grid, setGrid] = useState([
@@ -16,10 +18,11 @@ function App() {
     { id: 9, text: "" },
   ]);
   const [user, setUser] = useState(true);
+  const [victory, setVictory] = useState(false);
+  
+  
 
   function handlePlay(elementID) {
-    //NO NO push splice pop shift unshift
-    //OK map forEach slice  filter find some
     const newGrid = grid.map((item) => {
       if (item.id === elementID && !item.text) {
         return { ...item, text: user ? "X" : "O" };
@@ -27,19 +30,19 @@ function App() {
     });
     setUser(!user);
     setGrid(newGrid);
-  }
 
-  // if (!user) {
-  //   return (
-  //     <MainLayout>
-  //       <Zagruzka />
-  //     </MainLayout>
-  //   );
-  // }
+    if (checkWinCondition(newGrid)) {
+      setVictory(true); 
+    }
+  }
 
   return (
     <MainLayout>
-      <Grid grid={grid} handlePlay={handlePlay} />
+      {victory ? (
+        <h2>Victory!</h2>
+      ) : (
+        <Grid grid={grid} handlePlay={handlePlay} />
+      )}
     </MainLayout>
   );
 }
